@@ -1,0 +1,144 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  EMPLOYEE
+  MANAGER
+}
+
+enum ShiftStatus {
+  SCHEDULED
+  OPEN_FOR_SWAP
+  SWAPPED
+}
+
+enum SwapStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
+}
+
+enum NotificationType {
+  SWAP_REQUESTED
+  SWAP_APPROVED
+  SWAP_REJECTED
+  NEW_CLAIM
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         Role     @default(EMPLOYEE)
+  createdAt    DateTime @default(now())
+
+  // Shifts assigned to this user as an employee
+  shiftsAsEmployee Shift[] @relation("EmployeeShifts")
+  // Shifts this user created as a manager
+  shiftsCreated    Shift[] @relation("CreatedShifts")
+
+  // Swap requests this user posted (giving up a shift)
+  swapsRequested SwapRequest[] @relation("RequestedSwaps")
+  // Swap requests this user claimed (picking up a shift)
+  swapsClaimed   SwapRequest[] @relation("ClaimedSwaps")
+  // Swap requests this user decided on as a manager
+  swapsDecided   SwapRequest[] @relation("DecidedSwaps")
+
+  notifications Notification[]
+  auditLogs     AuditLog[]
+
+  @@map("users")
+}
+
+model Shift {
+  id          Int         @id @default(autoincrement())
+  employeeId  Int?
+  employee    User?       @relation("EmployeeShifts", fields: [employeeId], references: [id])
+  createdById Int
+  createdBy   User        @relation("CreatedShifts", fields: [createdById], references: [id])
+
+  date        DateTime
+  startTime   DateTime
+  endTime     DateTime
+  status      ShiftStatus @default(SCHEDULED)
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  swapRequests SwapRequest[]
+
+  @@index([employeeId, date])
+  @@map("shifts")
+}
+
+model SwapRequest {
+  id            Int        @id @default(autoincrement())
+
+  shiftId       Int
+  shift         Shift      @relation(fields: [shiftId], references: [id])
+
+  requestedById Int
+  requestedBy   User       @relation("RequestedSwaps", fields: [requestedById], references: [id])
+
+  claimedById   Int?
+  claimedBy     User?      @relation("ClaimedSwaps", fields: [claimedById], references: [id])
+
+  status        SwapStatus @default(PENDING)
+
+  decidedById   Int?
+  decidedBy     User?      @relation("DecidedSwaps", fields: [decidedById], references: [id])
+  decidedAt     DateTime?
+
+  createdAt     DateTime   @default(now())
+
+  notifications Notification[]
+
+  @@map("swap_requests")
+}
+
+model Notification {
+  id            Int              @id @default(autoincrement())
+  userId        Int
+  user          User             @relation(fields: [userId], references: [id])
+
+  message       String
+  type          NotificationType
+  isRead        Boolean          @default(false)
+
+  relatedSwapId Int?
+  relatedSwap   SwapRequest?     @relation(fields: [relatedSwapId], references: [id])
+
+  createdAt     DateTime         @default(now())
+
+  @@map("notifications")
+}
+
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+  actorId    Int
+  actor      User     @relation(fields: [actorId], references: [id])
+
+  action     String
+  entityType String
+  entityId   Int
+  metadata   Json?
+
+  createdAt  DateTime @default(now())
+
+  @@map("audit_logs")
+}
