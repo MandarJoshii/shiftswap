@@ -1,30 +1,24 @@
-import { useEffect, useState } from "react";
-import { getHealth, type HealthResponse } from "./api/health";
+import { Routes, Route, Navigate } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import DashboardPage from "./pages/DashboardPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-  const [health, setHealth] = useState<HealthResponse | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    getHealth()
-      .then(setHealth)
-      .catch((err) => setError(err.message));
-  }, []);
-
   return (
-    <div style={{ fontFamily: "sans-serif", padding: "2rem" }}>
-      <h1>ShiftSwap</h1>
-      <p>Trade shifts, not text messages.</p>
-
-      {error && <p style={{ color: "red" }}>Backend error: {error}</p>}
-      {health && (
-        <p style={{ color: "green" }}>
-          Backend status: {health.data.status} (checked at{" "}
-          {health.data.timestamp})
-        </p>
-      )}
-      {!health && !error && <p>Connecting to backend...</p>}
-    </div>
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+    </Routes>
   );
 }
 
