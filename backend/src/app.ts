@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import authRoutes from "./modules/auth/auth.routes";
 import userRoutes from "./modules/users/users.routes";
+import shiftRoutes from "./modules/shifts/shifts.routes";
 import { errorHandler } from "./middleware/errorHandler";
 
 const app = express();
@@ -24,6 +25,7 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/shifts", shiftRoutes);
 
 // Error handler — must be registered last
 app.use(errorHandler);

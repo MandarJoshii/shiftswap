@@ -30,3 +30,17 @@ export async function getMe(req: Request, res: Response, next: NextFunction) {
     next(error);
   }
 }
+
+export async function listEmployees(req: Request, res: Response, next: NextFunction) {
+  try {
+    const employees = await prisma.user.findMany({
+      where: { role: "EMPLOYEE" },
+      select: { id: true, name: true, email: true },
+      orderBy: { name: "asc" },
+    });
+
+    res.status(200).json({ success: true, data: employees });
+  } catch (error) {
+    next(error);
+  }
+}

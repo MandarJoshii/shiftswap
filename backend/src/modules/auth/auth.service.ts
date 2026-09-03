@@ -5,12 +5,9 @@ import type { RegisterInput, LoginInput } from "./auth.validation";
 
 const SALT_ROUNDS = 10;
 
-export class AuthError extends Error {
-  constructor(message: string, public statusCode: number = 400) {
-    super(message);
-    this.name = "AuthError";
-  }
-}
+import { AppError } from "../../utils/AppError";
+
+export class AuthError extends AppError {}
 
 export async function registerUser(input: RegisterInput) {
   const existingUser = await prisma.user.findUnique({

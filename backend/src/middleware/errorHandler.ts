@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodError } from "zod";
-import { AuthError } from "../modules/auth/auth.service";
+import { AppError } from "../utils/AppError";
 
 export function errorHandler(
   err: unknown,
@@ -23,12 +23,12 @@ export function errorHandler(
     return;
   }
 
-  if (err instanceof AuthError) {
+  if (err instanceof AppError) {
     res.status(err.statusCode).json({
       success: false,
       error: {
         message: err.message,
-        code: "AUTH_ERROR",
+        code: "APP_ERROR",
       },
     });
     return;
