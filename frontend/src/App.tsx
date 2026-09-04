@@ -4,6 +4,7 @@ import RegisterPage from "./pages/RegisterPage";
 import DashboardPage from "./pages/DashboardPage";
 import SwapsPage from "./pages/SwapsPage";
 import RequestsPage from "./pages/RequestsPage";
+import HistoryPage from "./pages/HistoryPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AppLayout from "./components/AppLayout";
 
@@ -23,6 +24,14 @@ function App() {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/swaps" element={<SwapsPage />} />
         <Route path="/requests" element={<RequestsPage />} />
+        <Route
+          path="/history"
+          element={
+            <ProtectedRoute allowedRoles={["MANAGER"]}>
+              <HistoryPage />
+            </ProtectedRoute>
+          }
+        />
       </Route>
 
       <Route path="/" element={<Navigate to="/dashboard" replace />} />

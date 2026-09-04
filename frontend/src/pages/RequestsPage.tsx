@@ -30,18 +30,24 @@ export default function RequestsPage() {
           : "Shifts you've posted and claims you've made."}
       </p>
 
-      {isLoading && <p className="font-sans text-sm text-ink/50">Loading requests...</p>}
+      {isLoading && (
+  <div className="flex items-center gap-2 text-ink/40 py-12 justify-center">
+    <div className="w-3 h-3 border-2 border-ink/20 border-t-ink/60 rounded-full animate-spin" />
+    <span className="font-sans text-sm">Loading requests...</span>
+  </div>
+)}
       {isError && (
         <p className="font-sans text-sm text-stamp-deep">Couldn't load requests. Please try again.</p>
       )}
 
       {swaps && swaps.length === 0 && (
-        <div className="border border-rule py-16 text-center">
-          <p className="font-sans text-sm text-ink/50">
-            {isManager ? "No pending requests right now." : "You haven't made any swap requests yet."}
-          </p>
-        </div>
-      )}
+  <div className="border border-rule py-20 text-center">
+    <p className="font-mono text-xs uppercase tracking-widest text-ink/30 mb-2">— empty —</p>
+    <p className="font-sans text-sm text-ink/50">
+      {isManager ? "No pending requests right now." : "You haven't made any swap requests yet."}
+    </p>
+  </div>
+)}
 
       {swaps && swaps.length > 0 && (
         <div className="border-t border-rule">

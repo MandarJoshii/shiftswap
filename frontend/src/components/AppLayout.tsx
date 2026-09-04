@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Button from "./ui/Button";
+import NotificationBell from "./features/NotificationBell";
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   `font-sans text-sm pb-1 border-b-2 transition-colors ${
@@ -16,6 +17,7 @@ export default function AppLayout() {
         <div className="flex items-center justify-between px-6 lg:px-10 py-5">
           <h1 className="font-display text-2xl text-ink">ShiftSwap</h1>
           <div className="flex items-center gap-4">
+            <NotificationBell />
             <span className="font-sans text-sm text-ink/70">
               {user?.name} · {user?.role}
             </span>
@@ -34,6 +36,11 @@ export default function AppLayout() {
           <NavLink to="/requests" className={navLinkClass}>
             {user?.role === "MANAGER" ? "Approvals" : "My requests"}
           </NavLink>
+          {user?.role === "MANAGER" && (
+            <NavLink to="/history" className={navLinkClass}>
+              History
+            </NavLink>
+          )}
         </nav>
       </header>
 
