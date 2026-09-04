@@ -9,8 +9,8 @@ router.use(requireAuth);
 
 router.get("/open-shifts", getOpenShifts);
 router.get("/", list);
-router.post("/claim", claim);
-router.post("/:shiftId/post", postForSwap);
+router.post("/claim", requireRole("EMPLOYEE"), claim);
+router.post("/:shiftId/post", requireRole("EMPLOYEE"), postForSwap);
 router.patch("/:id/approve", requireRole("MANAGER"), approve);
 router.patch("/:id/reject", requireRole("MANAGER"), reject);
 
