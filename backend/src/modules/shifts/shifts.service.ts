@@ -15,6 +15,22 @@ async function assertEmployeeExists(employeeId: number) {
   }
 }
 
+export async function findConflictingShifts(
+  employeeId: number,
+  startTime: Date,
+  endTime: Date,
+  excludeShiftId?: number
+) {
+  return prisma.shift.findMany({
+    where: {
+      employeeId,
+      id: excludeShiftId ? { not: excludeShiftId } : undefined,
+      startTime: { lt: endTime },
+      endTime: { gt: startTime },
+    },
+  });
+}
+
 export async function createShift(input: CreateShiftInput, createdById: number) {
   if (input.employeeId) {
     await assertEmployeeExists(input.employeeId);
