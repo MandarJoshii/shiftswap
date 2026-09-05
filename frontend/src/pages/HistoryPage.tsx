@@ -1,5 +1,7 @@
 import { format } from "date-fns";
+import { motion } from "framer-motion";
 import { useAuditLog } from "../hooks/useAudit";
+import { listContainer, listItem } from "../lib/motion";
 
 const actionLabels: Record<string, string> = {
   SHIFT_CREATED: "created a shift",
@@ -22,26 +24,35 @@ export default function HistoryPage() {
       </p>
 
       {isLoading && (
-  <div className="flex items-center gap-2 text-ink/40 py-12 justify-center">
-    <div className="w-3 h-3 border-2 border-ink/20 border-t-ink/60 rounded-full animate-spin" />
-    <span className="font-sans text-sm">Loading history...</span>
-  </div>
-)}
+        <div className="flex items-center gap-2 text-ink/40 py-12 justify-center">
+          <div className="w-3 h-3 border-2 border-ink/20 border-t-ink/60 rounded-full animate-spin" />
+          <span className="font-sans text-sm">Loading history...</span>
+        </div>
+      )}
       {isError && (
         <p className="font-sans text-sm text-stamp-deep">Couldn't load history. Please try again.</p>
       )}
 
       {logs && logs.length === 0 && (
-  <div className="border border-rule py-20 text-center">
-    <p className="font-mono text-xs uppercase tracking-widest text-ink/30 mb-2">— empty —</p>
-    <p className="font-sans text-sm text-ink/50">No activity recorded yet.</p>
-  </div>
-)}
+        <div className="border border-rule py-20 text-center">
+          <p className="font-mono text-xs uppercase tracking-widest text-ink/30 mb-2">— empty —</p>
+          <p className="font-sans text-sm text-ink/50">No activity recorded yet.</p>
+        </div>
+      )}
 
       {logs && logs.length > 0 && (
-        <div className="border-t border-rule">
+        <motion.div
+          variants={listContainer}
+          initial="hidden"
+          animate="visible"
+          className="border-t border-rule"
+        >
           {logs.map((log) => (
-            <div key={log.id} className="flex items-center justify-between border-b border-rule py-3">
+            <motion.div
+              key={log.id}
+              variants={listItem}
+              className="flex items-center justify-between border-b border-rule py-3"
+            >
               <p className="font-sans text-sm text-ink">
                 <span className="font-medium">{log.actor.name}</span>{" "}
                 {actionLabels[log.action] ?? log.action.toLowerCase().replace(/_/g, " ")}
@@ -49,9 +60,9 @@ export default function HistoryPage() {
               <span className="font-mono text-xs text-ink/40 tabular-nums">
                 {format(new Date(log.createdAt), "MMM d, h:mma").toLowerCase()}
               </span>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
     </div>
   );

@@ -1,5 +1,7 @@
 import { format, isSameDay, isToday } from "date-fns";
+import { motion } from "framer-motion";
 import type { Shift } from "../../api/shifts";
+import { listContainer, listItem } from "../../lib/motion";
 
 interface ScheduleGridProps {
   days: Date[];
@@ -14,13 +16,23 @@ function formatTime(iso: string) {
 
 export default function ScheduleGrid({ days, shifts, currentUserId, onShiftClick }: ScheduleGridProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 border-t border-l border-rule">
+    <motion.div
+      key={days[0]?.toISOString()}
+      variants={listContainer}
+      initial="hidden"
+      animate="visible"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 border-t border-l border-rule"
+    >
       {days.map((day) => {
         const dayShifts = shifts.filter((s) => isSameDay(new Date(s.date), day));
         const today = isToday(day);
 
         return (
-          <div key={day.toISOString()} className="border-r border-b border-rule min-h-[180px]">
+          <motion.div
+            key={day.toISOString()}
+            variants={listItem}
+            className="border-r border-b border-rule min-h-[180px]"
+          >
             <div
               className={`px-3 py-2 border-b border-rule ${
                 today ? "bg-ink text-paper" : "bg-paper-raised"
@@ -67,9 +79,9 @@ export default function ScheduleGrid({ days, shifts, currentUserId, onShiftClick
                 );
               })}
             </div>
-          </div>
+          </motion.div>
         );
       })}
-    </div>
+    </motion.div>
   );
 }

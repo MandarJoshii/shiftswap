@@ -1,7 +1,9 @@
 import { format } from "date-fns";
+import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import { useOpenShifts, useClaimShift } from "../hooks/useSwaps";
+import { listContainer, listItem } from "../lib/motion";
 import Button from "../components/ui/Button";
 
 export default function SwapsPage() {
@@ -47,14 +49,20 @@ export default function SwapsPage() {
       )}
 
       {shifts && shifts.length > 0 && (
-        <div className="border-t border-rule">
+        <motion.div
+          variants={listContainer}
+          initial="hidden"
+          animate="visible"
+          className="border-t border-rule"
+        >
           {shifts.map((shift) => {
             const isOwnShift = shift.employeeId === user?.id;
             const canClaim = user?.role === "EMPLOYEE" && !isOwnShift;
 
             return (
-              <div
+              <motion.div
                 key={shift.id}
+                variants={listItem}
                 className="flex items-center justify-between border-b border-rule py-4"
               >
                 <div>
@@ -79,10 +87,10 @@ export default function SwapsPage() {
                     Claim shift
                   </Button>
                 )}
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       )}
     </div>
   );

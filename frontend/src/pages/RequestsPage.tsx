@@ -1,6 +1,8 @@
 import { format } from "date-fns";
+import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import { useSwaps, useApproveSwap, useRejectSwap } from "../hooks/useSwaps";
+import { listContainer, listItem } from "../lib/motion";
 import Button from "../components/ui/Button";
 import type { SwapRequest } from "../api/swaps";
 
@@ -31,28 +33,37 @@ export default function RequestsPage() {
       </p>
 
       {isLoading && (
-  <div className="flex items-center gap-2 text-ink/40 py-12 justify-center">
-    <div className="w-3 h-3 border-2 border-ink/20 border-t-ink/60 rounded-full animate-spin" />
-    <span className="font-sans text-sm">Loading requests...</span>
-  </div>
-)}
+        <div className="flex items-center gap-2 text-ink/40 py-12 justify-center">
+          <div className="w-3 h-3 border-2 border-ink/20 border-t-ink/60 rounded-full animate-spin" />
+          <span className="font-sans text-sm">Loading requests...</span>
+        </div>
+      )}
       {isError && (
         <p className="font-sans text-sm text-stamp-deep">Couldn't load requests. Please try again.</p>
       )}
 
       {swaps && swaps.length === 0 && (
-  <div className="border border-rule py-20 text-center">
-    <p className="font-mono text-xs uppercase tracking-widest text-ink/30 mb-2">— empty —</p>
-    <p className="font-sans text-sm text-ink/50">
-      {isManager ? "No pending requests right now." : "You haven't made any swap requests yet."}
-    </p>
-  </div>
-)}
+        <div className="border border-rule py-20 text-center">
+          <p className="font-mono text-xs uppercase tracking-widest text-ink/30 mb-2">— empty —</p>
+          <p className="font-sans text-sm text-ink/50">
+            {isManager ? "No pending requests right now." : "You haven't made any swap requests yet."}
+          </p>
+        </div>
+      )}
 
       {swaps && swaps.length > 0 && (
-        <div className="border-t border-rule">
+        <motion.div
+          variants={listContainer}
+          initial="hidden"
+          animate="visible"
+          className="border-t border-rule"
+        >
           {swaps.map((swap) => (
-            <div key={swap.id} className="flex items-center justify-between border-b border-rule py-4">
+            <motion.div
+              key={swap.id}
+              variants={listItem}
+              className="flex items-center justify-between border-b border-rule py-4"
+            >
               <div>
                 <div className="font-mono text-sm tabular-nums text-ink">
                   {format(new Date(swap.shift.date), "EEE, MMM d")} ·{" "}
@@ -86,9 +97,9 @@ export default function RequestsPage() {
                   {swap.status}
                 </span>
               )}
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
     </div>
   );
