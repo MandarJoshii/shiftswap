@@ -11,7 +11,7 @@ const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/shiftswap">
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <ToastProvider>
