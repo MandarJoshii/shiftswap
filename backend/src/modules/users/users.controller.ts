@@ -31,7 +31,7 @@ export async function getMe(req: Request, res: Response, next: NextFunction) {
   }
 }
 
-export async function listEmployees(req: Request, res: Response, next: NextFunction) {
+export async function listEmployees(_req: Request, res: Response, next: NextFunction) {
   try {
     const employees = await prisma.user.findMany({
       where: { role: "EMPLOYEE" },

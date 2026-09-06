@@ -4,9 +4,9 @@ import { AppError } from "../utils/AppError";
 
 export function errorHandler(
   err: unknown,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) {
   if (err instanceof ZodError) {
     res.status(400).json({

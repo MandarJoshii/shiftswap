@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
- "scripts": {
+"scripts": {
   "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-  "build": "tsc",
+  "build": "tsc --project tsconfig.build.json && node scripts/copyPrismaAssets.js",
   "start": "node dist/server.js",
   "test": "jest --runInBand"
 },
