@@ -12,7 +12,16 @@ import { errorHandler } from "./middleware/errorHandler";
 const app = express();
 
 // Middleware
-app.use(cors());
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://mandarjoshii.github.io",
+];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+  })
+);
 app.use(express.json());
 
 // Routes
